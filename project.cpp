@@ -21,11 +21,13 @@ private:
 public:
     LinkedList() : head(nullptr) {}
 
+    // Add a new record to the list
     void addRecord(int id, const string& data) {
         RecordNode* newNode = new RecordNode{id, data, head};
         head = newNode;
     }
 
+    // Display records in the list
     void displayRecords(const string& category, bool sorted = false) {
         loadRecordsFromFile(category);
 
@@ -49,6 +51,7 @@ public:
         }
     }
 
+    // Insertion sort for sorting records
     void insertionSort(vector<RecordNode*>& records) {
         for (size_t i = 1; i < records.size(); ++i) {
             RecordNode* key = records[i];
@@ -61,6 +64,7 @@ public:
         }
     }
 
+    // Search for a record by ID
     RecordNode* searchRecord(int id) {
         RecordNode* temp = head;
         while (temp) {
@@ -72,6 +76,7 @@ public:
         return nullptr;
     }
 
+    // Delete a record by ID
     void deleteRecord(int id) {
         RecordNode* temp = head;
         RecordNode* prev = nullptr;
@@ -89,6 +94,7 @@ public:
         }
     }
 
+    // Load records from a file
     void loadRecordsFromFile(const string& category) {
         ifstream file(category + ".txt");
         int id;
@@ -100,6 +106,7 @@ public:
         file.close();
     }
 
+    // Get the head of the list
     RecordNode* getHead() {
         return head;
     }
@@ -108,6 +115,7 @@ public:
 // Base User class
 class User {
 public:
+    // Register a new user
     virtual void registerUser(const string& filename) {
         ofstream file(filename, ios::app);
         string username, password;
@@ -120,6 +128,7 @@ public:
         cout << "Registration successful!" << endl;
     }
 
+    // Login an existing user
     virtual bool loginUser(const string& filename) {
         ifstream file(filename);
         string username, password, inputUsername, inputPassword;
@@ -139,6 +148,7 @@ public:
         return false;
     }
 
+    // Add a new record
     virtual void addNewRecord(LinkedList& list, const string& category) {
         int id;
         string data;
@@ -154,6 +164,7 @@ public:
         file.close();
     }
 
+    // Edit an existing record
     virtual void editRecord(LinkedList& list, const string& category) {
         int id;
         string data;
@@ -182,6 +193,7 @@ public:
         }
     }
 
+    // Search for a record
     virtual void searchRecord(LinkedList& list) {
         int id;
         cout << "Enter record ID to search: ";
@@ -194,6 +206,7 @@ public:
         }
     }
 
+    // Display records
     virtual void displayRecords(LinkedList& list, bool sorted) {
         string category;
         cout << "Enter category to display records: ";
@@ -201,6 +214,7 @@ public:
         list.displayRecords(category, sorted);
     }
 
+    // Logout the user
     virtual void logout() {
         cout << "Logged out." << endl;
     }
@@ -209,6 +223,7 @@ public:
 // Admin class derived from User
 class Admin : public User {
 public:
+    // Add a new category
     void addCategory() {
         string category;
         cout << "Enter new category name: ";
@@ -219,6 +234,7 @@ public:
         cout << "Category added successfully!" << endl;
     }
 
+    // Delete a record
     void deleteRecord(LinkedList& list, const string& category) {
         int id;
         cout << "Enter record ID to delete: ";
@@ -244,6 +260,7 @@ class Customer : public User {
     // Customer specific functions can be added here if needed
 };
 
+// Load categories from file
 void loadCategories(vector<string>& categories) {
     ifstream file("categories.txt");
     string category;
@@ -253,14 +270,17 @@ void loadCategories(vector<string>& categories) {
     file.close();
 }
 
+// Display the login menu
 void displayLoginMenu() {
     cout << "1. Admin Login\n2. Customer Login\n3. Admin Register\n4. Customer Register\n5. Exit\nChoose: ";
 }
 
+// Display the admin menu
 void displayAdminMenu() {
     cout << "1. Add Record\n2. Edit Record\n3. Delete Record\n4. Search Record\n5. Display Records\n6. Add Category\n7. Logout\nChoose: ";
 }
 
+// Display the customer menu
 void displayCustomerMenu() {
     cout << "1. Add Record\n2. Edit Record\n3. Search Record\n4. Display Records\n5. Logout\nChoose: ";
 }
