@@ -112,6 +112,16 @@ public:
     }
 };
 
+// Load categories from file
+void loadCategories(vector<string>& categories) {
+    ifstream file("categories.txt");
+    string category;
+    while (file >> category) {
+        categories.push_back(category);
+    }
+    file.close();
+}
+
 // Base User class
 class User {
 public:
@@ -209,7 +219,13 @@ public:
     // Display records
     virtual void displayRecords(LinkedList& list, bool sorted) {
         string category;
-        cout << "Enter category to display records: ";
+        cout << "Available categories: ";
+        vector<string> categories;
+        loadCategories(categories);
+        for (const auto& cat : categories) {
+            cout << cat << " ";
+        }
+        cout << "\nEnter category to display records: ";
         cin >> category;
         list.displayRecords(category, sorted);
     }
@@ -255,20 +271,10 @@ public:
     }
 };
 
-// Customer class derived from User
+// Customer class derived from User {
 class Customer : public User {
     // Customer specific functions can be added here if needed
 };
-
-// Load categories from file
-void loadCategories(vector<string>& categories) {
-    ifstream file("categories.txt");
-    string category;
-    while (file >> category) {
-        categories.push_back(category);
-    }
-    file.close();
-}
 
 // Display the login menu
 void displayLoginMenu() {
