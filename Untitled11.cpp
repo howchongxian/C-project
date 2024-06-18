@@ -4,7 +4,6 @@
 #include <vector>
 #include <unordered_map>
 #include <sstream>
-#include <limits>
 
 using namespace std;
 
@@ -24,46 +23,69 @@ struct RecordNode {
 class LinkedList {
 	
 private:
+	
     RecordNode* head;
 
 public:
+	
     LinkedList() : head(nullptr) {}
 
     // Add a new record to the list
-    void addRecord(int id, const string& data, const string& deliveryStatus, const string& receiveStatus) {
+    
+    
+     void addRecord(int id, const string& data, const string& deliveryStatus, const string& receiveStatus) {
     RecordNode* newNode = new RecordNode{id, data, deliveryStatus, receiveStatus, nullptr};
 
     if (!head) {
-        head = newNode;  
+    	
+        head = newNode;
+        
     } else {
-        RecordNode* temp = head; 
-        while (temp->next) {	
-            temp = temp->next;  
+    	
+        RecordNode* temp = head;
+        
+        while (temp->next) {
+        	
+            temp = temp->next;
+            
         }
-        temp->next = newNode;  
+        
+        temp->next = newNode;
+        
     }
 }
 
     // Display records in the list
+    
     void displayRecords(const string& category, bool sorted = false) {
+    	
     loadRecordsFromFile(category);
 
     if (sorted) {
+    	
         vector<RecordNode*> records;
         RecordNode* temp = head;
+        
         while (temp) {
+        	
             records.push_back(temp);
-            temp = temp->next; 
+            temp = temp->next;
+            
         }
 
         insertionSort(records);
+
         for (const auto& record : records) {
-            cout << "\t\tID: " << record->id << ", Data: " << record->data << ", Delivered: " << record->deliveryStatus << ", Received: " << record->receiveStatus << endl;       
+        	
+            cout << "\t\tID: " << record->id << ", Data: " << record->data << ", Delivered: " << record->deliveryStatus << ", Received: " << record->receiveStatus << endl;
+                 
         }
     } else {
         RecordNode* temp = head;
-        while (temp) {	
-            cout << "\t\tID: " << temp->id << ", Data: " << temp->data << ", Delivered: " << temp->deliveryStatus << ", Received: " << temp->receiveStatus << endl; 
+        while (temp) {
+        	
+            cout << "\t\tID: " << temp->id << ", Data: " << temp->data << ", Delivered: " << temp->deliveryStatus << ", Received: " << temp->receiveStatus << endl;
+            
             temp = temp->next;
         }
     }
@@ -71,38 +93,53 @@ public:
 
     // Insertion sort for sorting records
     void insertionSort(vector<RecordNode*>& records) {
-        for (size_t i = 1; i < records.size(); ++i) {	
+    	
+        for (size_t i = 1; i < records.size(); ++i) {
+        	
             RecordNode* key = records[i];
+            
             int j = i - 1;
-            while (j >= 0 && records[j]->id > key->id) {	
+            
+            while (j >= 0 && records[j]->id > key->id) {
+            	
+            	
                 records[j + 1] = records[j];
-                --j;  
-            }  
+                --j;
+                
+            }
+            
             records[j + 1] = key;
+            
         }
     }
 
     // Search for a record by ID
+    
     RecordNode* searchRecord(int id, const string& data = "", const string& deliveryStatus = "", const string& receiveStatus = "") {
     RecordNode* temp = head;
     while (temp) {
+    	
         // Check if any of the given criteria match
         if ((id == -1 || temp->id == id) &&
             (data.empty() || temp->data == data) &&
             (deliveryStatus.empty() || temp->deliveryStatus == deliveryStatus) &&
             (receiveStatus.empty() || temp->receiveStatus == receiveStatus)) {
             	
-            return temp;  
+            return temp;
+            
         }
-    
+        
         temp = temp->next;
+        
     }
     
     return nullptr; // Return nullptr if not found
+    
 }
 
     // Delete a record by ID
     void deleteRecord(int id) {
+    	
         RecordNode* temp = head;
         RecordNode* prev = nullptr;
         
@@ -113,12 +150,17 @@ public:
         
         if (temp) {
             if (prev) {
-                prev->next = temp->next;   
-            } else {	
-                head = temp->next;   
+            	
+                prev->next = temp->next;
+                
+            } else {
+            	
+                head = temp->next;
+                
             }
             
             delete temp;
+            
         }
     }
 
@@ -495,12 +537,14 @@ void addCategory() {
     getline(cin >> ws, category); // Use getline to read the category name, and ws to skip leading whitespace
     
     // Open file with category name as the file name
-    ofstream file(category + ".txt");
+    ofstream file("categories.txt", ios::app);
     
     if (!file.is_open()) {
         cout << "\t\tError creating file '" << category << ".txt'\n";
         return;
     }
+    
+    file << category << endl;
     
     // Optionally, write category details or contents to the file
     // file << "Details for category: " << category << endl;
@@ -629,7 +673,7 @@ void displayCustomerMenu() {
 	cout << "\t\t4. Display Records\n"<<endl;
 	cout << "\t\t5. Provide Feedback\n" << endl; 
 	cout << "\t\t6. How to use each feature\n" << endl; 
-	cout << "\t\t7. Check Password\n" << endl;
+	cout << "\t\t7. Check Profile\n" << endl;
 	cout << "\t\t8. change Username\n" << endl;
 	cout << "\t\t9. Delete Account\n" << endl;
 	cout << "\t\t0. Logout\n"<<endl;
@@ -896,12 +940,13 @@ void viewcheckpassword(const string& username) {
     file.close();
 }
 
+
 void deleteAccount(const string& username) {
     ifstream infile("customer.txt");
     ofstream outfile("temp.txt");
 
     if (!infile.is_open() || !outfile.is_open()) {
-        cout << "\t\tError opening file.\n";
+        cerr << "\t\tError opening file.\n";
         return;
     }
 
@@ -909,28 +954,39 @@ void deleteAccount(const string& username) {
     bool found = false;
 
     while (getline(infile, line)) {
-        stringstream ss(line);
+        istringstream ss(line);
         ss >> storedUsername;
 
         if (storedUsername == username) {
             found = true;
             cout << "\t\tAccount '" << storedUsername << "' deleted successfully.\n";
         } else {
-            outfile << line << endl;
+            outfile << line << '\n';
         }
     }
 
     infile.close();
     outfile.close();
 
-    if (found) {
-        remove("customer.txt");
-        rename("temp.txt", "customer.txt");
-    } else {
-        remove("temp.txt");
+    if (remove("customer.txt") != 0) {
+        cerr << "\t\tError deleting the original file.\n";
+        return;
+    }
+
+    if (rename("temp.txt", "customer.txt") != 0) {
+        cerr << "\t\tError renaming the temporary file.\n";
+        return;
+    }
+
+    if (!found) {
         cout << "\t\tUsername '" << username << "' not found.\n";
     }
 }
+
+
+
+
+
 
 int main() {
     LinkedList list;
@@ -1120,7 +1176,7 @@ int main() {
                         loadCategories(categories);
                         // Clear input buffer
         cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
                         
                     } else if (adminChoice == 7) {
                     	system("cls");
@@ -1264,8 +1320,8 @@ int main() {
                         admin.addCategory();
                         loadCategories(categories);
                         // Clear input buffer
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        				cin.clear();
+
                         
                     } else if (adminChoice == 7) {
                     	system("cls");
