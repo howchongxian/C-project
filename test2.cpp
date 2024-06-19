@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <sstream>
+#include <limits>
 
 using namespace std;
 
@@ -673,7 +674,7 @@ void displayCustomerMenu() {
 	cout << "\t\t4. Display Records\n"<<endl;
 	cout << "\t\t5. Provide Feedback\n" << endl; 
 	cout << "\t\t6. How to use each feature\n" << endl; 
-	cout << "\t\t7. Check Profile\n" << endl;
+	cout << "\t\t7. Check Password\n" << endl;
 	cout << "\t\t8. change Username\n" << endl;
 	cout << "\t\t9. Delete Account\n" << endl;
 	cout << "\t\t0. Logout\n"<<endl;
@@ -946,7 +947,7 @@ void deleteAccount(const string& username) {
     ofstream outfile("temp.txt");
 
     if (!infile.is_open() || !outfile.is_open()) {
-        cerr << "\t\tError opening file.\n";
+        cout << "\t\tError opening file.\n";
         return;
     }
 
@@ -954,29 +955,22 @@ void deleteAccount(const string& username) {
     bool found = false;
 
     while (getline(infile, line)) {
-        istringstream ss(line);
+        stringstream ss(line);
         ss >> storedUsername;
 
         if (storedUsername == username) {
             found = true;
             cout << "\t\tAccount '" << storedUsername << "' deleted successfully.\n";
         } else {
-            outfile << line << '\n';
+            outfile << line << endl;
         }
     }
 
     infile.close();
     outfile.close();
 
-    if (remove("customer.txt") != 0) {
-        cerr << "\t\tError deleting the original file.\n";
-        return;
-    }
-
-    if (rename("temp.txt", "customer.txt") != 0) {
-        cerr << "\t\tError renaming the temporary file.\n";
-        return;
-    }
+    remove("customer.txt");
+    rename("temp.txt", "customer.txt");
 
     if (!found) {
         cout << "\t\tUsername '" << username << "' not found.\n";
@@ -1176,7 +1170,7 @@ int main() {
                         loadCategories(categories);
                         // Clear input buffer
         cin.clear();
-
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
                         
                     } else if (adminChoice == 7) {
                     	system("cls");
@@ -1320,8 +1314,8 @@ int main() {
                         admin.addCategory();
                         loadCategories(categories);
                         // Clear input buffer
-        				cin.clear();
-
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
                         
                     } else if (adminChoice == 7) {
                     	system("cls");
@@ -1714,15 +1708,21 @@ int main() {
     }
 						system("pause");
                     }else if (customerChoice == 9) {
-                    	system("cls");
-                    	string username;
-                    	cout << "\t\t---------------------------------------"<<endl;
-                    	cout << "\t\t\t\tEdit Account Name"<<endl;
-                    	cout << "\t\t---------------------------------------"<<endl;
-                    	cout << "\t\tWhat is your username : ";
-                    	deleteAccount(username);
-						getline(cin,username);
-                        system("pause");
+                    	 system("cls");
+
+    string username;
+    cout << "\t\t---------------------------------------" << endl;
+    cout << "\t\t\t\tAccount Name" << endl;
+    cout << "\t\t---------------------------------------" << endl;
+    cout << "\t\tWhat is your username: ";
+    
+    // Clear the input buffer before using getline
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    getline(cin, username);
+    
+    deleteAccount(username);
+
+    system("pause");
 						break;}
             else if (customerChoice == 0) {
                     	
